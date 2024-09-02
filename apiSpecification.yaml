@@ -1,0 +1,214 @@
+openapi: 3.0.3
+info: 
+  title: Football management tool
+  version: 1.0.0
+servers: 
+  - url: https://localhost.std23080.com
+paths:
+  /competition:
+    get:
+      tags:
+        - competition
+      description: return list of competitions
+      responses:
+        '200':
+          description: list of competitions
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/competition'
+  /team:
+    get:
+      tags:
+        - team
+      description: return list of teams
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema: 
+            type: integer
+        - name: pageSize
+          in: query
+          required: true
+          schema: 
+            type: integer    
+      responses:
+        '200':
+          description: list of teams
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/team'
+    post:
+      tags:
+        - team
+      description: add list of teams
+      requestBody:
+        description: team to add 
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/teamToAdd'
+      responses:
+        '200':
+          description: teams added 
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/team'  
+  /associationTeamAndCompetition:
+    post:
+      tags:
+        - team
+      description: add list of teams to an competition
+      requestBody:
+        description: teams to add 
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/associationTeamAndCompetition'
+      responses:
+        '200':
+          description: teams added to an competition
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/associationTeamAndCompetition'
+  /player:
+    get:
+      tags:
+        - player
+      description: return list of players
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema: 
+            type: integer
+        - name: pageSize
+          in: query
+          required: true
+          schema: 
+            type: integer 
+      responses:
+        '200':
+          description: list of players
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/player'
+    post:
+      tags:
+        - player
+      description: add list of players
+      requestBody:
+        description: player to add 
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/player'
+      responses:
+        '200':
+          description: players added 
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/player' 
+  
+  /playerTransfer:
+    post:
+      tags:
+        - player
+      description: add list of players in one team
+      requestBody:
+        description: players to add in one team
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/playerTransfer'
+      responses:
+        '200':
+          description: players added to the team
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/playerTransfer'
+components:
+  schemas:
+    competition:
+      type: object
+      properties:
+        name: 
+          type: string
+        country:
+          type: string
+    team:
+      type: object
+      properties:
+        allOf:
+          $ref: '#/components/schemas/teamToAdd' 
+        competitionsList:
+          type: array
+          items: 
+            $ref: '#/components/schemas/competition'
+        playersList: 
+          type: array
+          items: 
+            $ref: '#/components/schemas/player'
+    teamToAdd:
+      type: object
+      properties:
+        name:
+          type: string
+        tagLine:
+          type: string
+    associationTeamAndCompetition:
+      type: object
+      properties:
+        team: 
+          allOf:
+           - $ref: '#/components/schemas/team'
+        competition:
+          allOf:
+           - $ref: '#/components/schemas/competition'
+    player:
+      type: object
+      properties:
+        name: 
+          type: string
+        number:
+          type: integer
+        strongFoot:
+          type: string
+    playerTransfer:
+      type: object
+      properties:
+        player:
+          allOf:
+            - $ref: '#/components/schemas/player'
+        team:
+          allOf:
+            - $ref: '#/components/schemas/team'
